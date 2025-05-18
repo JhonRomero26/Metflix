@@ -1,23 +1,21 @@
 {
-  "name": "PlatziVideo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "metflix",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "start": "live-server"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JhonRomero26/PlatziVideo.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JhonRomero26/PlatziVideo/issues"
-  },
-  "homepage": "https://github.com/JhonRomero26/PlatziVideo#readme",
   "dependencies": {
-    "live-server": "^1.2.1"
+    "@astrojs/vercel": "^8.1.4",
+    "@justinribeiro/lite-youtube": "^1.8.1",
+    "astro": "5.7.13"
+  },
+  "devDependencies": {
+    "@midudev/tailwind-animations": "^0.2.0",
+    "@tailwindcss/vite": "4.1.7",
+    "tailwindcss": "4.1.7"
   }
 }

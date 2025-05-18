@@ -1,0 +1,192 @@
+---
+import SearchIcon from "./icons/SearchIcon.astro";
+import Modal from "./Modal.astro";
+
+const movie = {
+  backdrop_path: "/fTrQsdMS2MUw00RnzH0r3JWHhts.jpg",
+  id: 1197306,
+  title: "A Working Man",
+  original_title: "A Working Man",
+  overview:
+    "Levon Cade left behind a decorated military career in the black ops to live a simple life working construction. But when his boss's daughter, who is like family to him, is taken by human traffickers, his search to bring her home uncovers a world of corruption far greater than he ever could have imagined.",
+  poster_path: "/6FRFIogh3zFnVWn7Z6zcYnIbRcX.jpg",
+  media_type: "movie",
+  adult: false,
+  original_language: "en",
+  genre_ids: [28, 80, 53],
+  popularity: 335.4882,
+  release_date: "2025-03-26",
+  video: false,
+  vote_average: 6.5,
+  vote_count: 721,
+};
+---
+
+<Modal id="search-modal">
+  <button
+    id="btn-search-modal"
+    slot="trigger"
+    class="flex bg-neutral-800 px-4 py-2 rounded-full cursor-pointer items-center gap-2"
+  >
+    <SearchIcon class="text-xl" />
+    <span>Ctrl + K</span>
+  </button>
+  <div
+    class="relative py-8 px-4 flex items-center gap-4 border-b border-neutral-700"
+  >
+    <SearchIcon class="text-2xl" />
+    <input
+      id="search-input"
+      class="w-full py-2 mr-12 outline-0 text-white"
+      placeholder="Buscar peliculas"
+    />
+    <span
+      class="absolute right-4 top-9 rounded border-neutral-400 border py-1 px-2"
+      >esc</span
+    >
+  </div>
+  <div id="search-results" class="max-h-[70vh] overflow-y-scroll"></div>
+</Modal>
+
+<script>
+  import type { MovieResponse } from "@/models/Movie";
+  import { getMovies } from "@/services/movies";
+  import { debounce } from "@/utils/debounce";
+  import { signal } from "@/utils/signal";
+  import { createMovieFoundCard } from "@/components/movie-found-card";
+
+  const search = signal<string>("");
+  const movies = signal<MovieResponse[]>([]);
+  let actualPage = 1;
+  const debouncedSearch = debounce((value: string) => {
+    search.value = value;
+  }, 500);
+  let observer: IntersectionObserver | null = null;
+
+  const $modal = document.getElementById("search-modal");
+  const $btnModal = document.getElementById("btn-search-modal");
+  const $results = document.getElementById("search-results");
+  const $search = document.getElementById("search-input");
+
+  const closeModal = () => {
+    $modal?.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  };
+
+  const openModal = () => {
+    $modal?.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    $search?.focus();
+  };
+
+  const createObserver = () => {
+    return new IntersectionObserver(
+      (entries) => {
+        entries.forEach(async (entry) => {
+          if (entry.isIntersecting) {
+            await handleSearch();
+          }
+        });
+      },
+      { root: $results, rootMargin: "0px 0px 50px 0px" }
+    );
+  };
+
+  const renderMovies = () => {
+    if (!$results) return;
+
+    if (movies.value.length === 0) {
+      $results.innerHTML = "";
+      return;
+    }
+
+    movies.value.forEach(({ id, title, poster, releaseDate, overview }) => {
+      const $movie = createMovieFoundCard({
+        id,
+        title,
+        poster: `https://image.tmdb.org/t/p/w220_and_h330_face/${poster}`,
+        year: String(releaseDate.getFullYear()),
+        overview,
+      });
+      $results?.appendChild($movie);
+    });
+
+    setIntersectionElement();
+  };
+
+  const setIntersectionElement = debounce(() => {
+    const $intersector = $results?.querySelector("#results-intersection");
+    if ($intersector) $intersector.remove();
+
+    const $sentinel = document.createElement("span");
+    $sentinel.setAttribute("id", "results-intersection");
+    $results?.appendChild($sentinel);
+
+    if (observer) {
+      observer.disconnect();
+    }
+
+    observer = createObserver();
+    observer.observe($sentinel);
+  }, 300);
+
+  const handleSearch = async () => {
+    try {
+      const res = await getMovies({
+        mode: "search",
+        queries: { page: actualPage, query: search.value },
+      });
+
+      if (res.length === 0) {
+        observer?.disconnect();
+        return;
+      }
+
+      movies.value = res;
+      actualPage++;
+      setIntersectionElement();
+    } catch (error) {
+      console.error("Error al buscar películas:", error);
+    }
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "k" && e.ctrlKey) {
+      e.preventDefault();
+      openModal();
+    } else if (e.key === "Escape") {
+      closeModal();
+    }
+  });
+
+  $modal?.addEventListener("click", (e) => {
+    if (e.target === $modal) closeModal();
+  });
+
+  $btnModal?.addEventListener("click", () => {
+    openModal();
+  });
+
+  if ($search) {
+    $search.addEventListener("input", (e) => {
+      debouncedSearch((e.target as HTMLInputElement).value);
+    });
+  }
+
+  search.subscribe(async (value) => {
+    if (!$results) return;
+
+    if (value === "") {
+      $results.innerHTML = "";
+      return;
+    }
+
+    movies.value = [];
+    actualPage = 1;
+    await handleSearch();
+  });
+
+  movies.subscribe(() => {
+    renderMovies();
+  });
+</script>

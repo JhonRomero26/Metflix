@@ -1,0 +1,113 @@
+---
+import HeartIcon from "@/components/icons/HeartIcon.astro";
+import StarIcon from "@/components/icons/StarIcon.astro";
+import Modal from "@/components/Modal.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getMovie } from "@/services/movies";
+import { THE_MOVIE_DB_MEDIA_URL } from "@/utils/consts";
+
+const { id } = Astro.params;
+
+const movie = await getMovie({
+  id,
+  queries: {
+    append_to_response: "videos",
+  },
+});
+const categories = movie.genres.map((genre) => genre.name);
+const trailer =
+  movie.videos.find((video) => video.type.toLowerCase() === "trailer") ||
+  movie.videos[0];
+---
+
+<Layout title={`${movie.title} | Metflix`} description={movie.overview}>
+  <div class="relative min-h-dvh flex items-center justify-center py-16 px-8">
+    <img
+      class="absolute inset-0 w-full h-full object-cover object-center z-10"
+      src={`${THE_MOVIE_DB_MEDIA_URL.W600}/${movie.backdropImage}`}
+      alt={movie.title}
+    />
+    <div class="absolute inset-0 bg-neutral-900/80 backdrop-blur-md z-10"></div>
+    <div
+      class="container flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10 xl:max-w-5xl"
+    >
+      <img
+        src={`${THE_MOVIE_DB_MEDIA_URL.W220}/${movie.poster}`}
+        class="rounded w-60"
+        alt={movie.title}
+      />
+      <div>
+        <h1 class="text-3xl text-white font-bold mb-4">
+          {movie.title} ({movie.releaseDate.getFullYear()})
+        </h1>
+        <p class="text-lg">{movie.overview}</p>
+        <div class="flex gap-2 mt-4">
+          {
+            categories.map((category) => (
+              <span class="text-sm text-neutral-100 border border-neutral-400 rounded px-2 py-1 bg-neutral-100/25">
+                {category}
+              </span>
+            ))
+          }
+        </div>
+        <div class="flex font-bold items-center gap-8 mt-4">
+          <div class="flex items-center gap-2">
+            <HeartIcon class="w-6 h-6 text-red-500" />
+            {movie.popularity}
+          </div>
+          <div class="flex items-center gap-2">
+            <StarIcon class="w-6 h-6 text-amber-500" />
+            {movie.voteAverage.toFixed(1)}
+          </div>
+        </div>
+        {
+          trailer && (
+            <Modal id="trailer-modal">
+              <button
+                id="play-trailer"
+                slot="trigger"
+                class="flex items-center gap-2 mt-4 bg-red-600 hover:bg-red-700 py-2 px-4 rounded text-white"
+              >
+                Show trailer
+              </button>
+
+              <div class="p-12">
+                <h2 class="text-2xl font-bold mb-4">{movie.title}</h2>
+                <div class="mb-4">{movie.overview}</div>
+                <lite-youtube params="enablejsapi=1" videoid={trailer.key} />
+              </div>
+            </Modal>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import "@justinribeiro/lite-youtube";
+
+  const playTrailer = document.getElementById("play-trailer");
+  const trailerModal = document.getElementById("trailer-modal");
+  const $ytplayer = trailerModal?.querySelector("lite-youtube");
+
+  playTrailer?.addEventListener("click", () => {
+    const modal = document.getElementById("trailer-modal");
+    modal?.classList.remove("hidden");
+
+    if (!$ytplayer?.classList.contains("lyt-activated")) {
+      $ytplayer?.click();
+    }
+  });
+
+  trailerModal?.addEventListener("click", (e) => {
+    if (e.target === trailerModal) {
+      const $ytiframe = $ytplayer?.shadowRoot.querySelector("iframe");
+
+      $ytiframe?.contentWindow?.postMessage(
+        '{"event":"command","func":"pauseVideo","args":""}',
+        "*"
+      );
+    }
+  });
+</script>

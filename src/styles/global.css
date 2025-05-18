@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "./elements.css";
+@import "./carousel.css";
+@plugin "@midudev/tailwind-animations";

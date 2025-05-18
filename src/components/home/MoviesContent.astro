@@ -1,0 +1,82 @@
+---
+import { getMovies } from "@/services/movies";
+import MovieSection from "@/components/MoviesSection.astro";
+import { THE_MOVIE_DB_GENRES } from "@/utils/consts";
+
+const [
+  dramaMovies,
+  animationMovies,
+  comedyMovies,
+  adventureMovies,
+  actionMovies,
+  crimeMovies,
+  horrorMovies,
+  romanceMovies,
+] = await Promise.all([
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.DRAMA },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.ANIMATION },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.COMEDY },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.ADVENTURE },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.ACTION },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.CRIME },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.HORROR },
+  }),
+  await getMovies({
+    queries: { with_genres: THE_MOVIE_DB_GENRES.ROMANCE },
+  }),
+]);
+---
+
+<MovieSection
+  title="Drama"
+  category={THE_MOVIE_DB_GENRES.DRAMA}
+  movies={dramaMovies}
+/>
+<MovieSection
+  title="Animation"
+  category={THE_MOVIE_DB_GENRES.ANIMATION}
+  movies={animationMovies}
+/>
+<MovieSection
+  title="Comedy"
+  category={THE_MOVIE_DB_GENRES.COMEDY}
+  movies={comedyMovies}
+/>
+<MovieSection
+  title="Action"
+  category={THE_MOVIE_DB_GENRES.ACTION}
+  movies={actionMovies}
+/>
+<MovieSection
+  title="Adventure"
+  category={THE_MOVIE_DB_GENRES.ADVENTURE}
+  movies={adventureMovies}
+/>
+<MovieSection
+  title="Crime"
+  category={THE_MOVIE_DB_GENRES.CRIME}
+  movies={crimeMovies}
+/>
+<MovieSection
+  title="Horror"
+  category={THE_MOVIE_DB_GENRES.HORROR}
+  movies={horrorMovies}
+/>
+<MovieSection
+  title="Romance"
+  category={THE_MOVIE_DB_GENRES.ROMANCE}
+  movies={romanceMovies}
+/>

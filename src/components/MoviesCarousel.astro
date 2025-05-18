@@ -1,0 +1,29 @@
+---
+import "@/components/movie-card";
+import type { MovieResponse } from "@/models/Movie";
+import { THE_MOVIE_DB_MEDIA_URL } from "@/utils/consts";
+
+interface Props {
+  movies: MovieResponse[];
+}
+
+const { movies } = Astro.props;
+---
+
+<div class="carousel-videos">
+  <div class="text-nowrap p-3 my-14 inline-block carousel-body">
+    {
+      movies.map((movie) => (
+        <movie-card
+          id={movie.id}
+          title={movie.title}
+          poster={`${THE_MOVIE_DB_MEDIA_URL.W220}/${movie.poster}`}
+          releaseDate={movie.releaseDate}
+          overview={movie.overview}
+          backdrop={movie.backdropImage}
+        />
+      ))
+    }
+    <span id="intersection-carousel"></span>
+  </div>
+</div>

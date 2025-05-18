@@ -1,0 +1,53 @@
+---
+import { getTrendingMovies } from "@/services/movies";
+import MoviesSection from "@/components/MoviesSection.astro";
+
+const movies = await getTrendingMovies();
+const [firstMovie] = movies;
+---
+
+<section class="relative w-full overflow-hidden">
+  <div class="z-0">
+    <img
+      id="hero-poster"
+      class="absolute w-auto h-[1000px] lg:w-2/3 lg:right-0 object-cover object-center lg:mask-l-to-95% lg:mask-l-from-0% mask-b-from-60% mask-b-to-70% animate animate-fade-in"
+      src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${firstMovie.poster}`}
+      srcset={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${firstMovie.poster} 560w, https://image.tmdb.org/t/p/w1066_and_h600_bestv2/${firstMovie.backdropImage} 1024w, https://image.tmdb.org/t/p/original/${firstMovie.backdropImage} 1280w`}
+      alt={`Poster de ${firstMovie.title}`}
+    />
+    <div class="lg:hidden absolute inset-0 bg-black/80"></div>
+  </div>
+
+  <!-- Contenido sobre la imagen -->
+  <div class="flex relative z-10 px-8 py-16 h-[500px]">
+    <div
+      class="flex flex-col justify-center items-center lg:items-start lg:max-w-2/5 max-w-2xl w-full mx-auto lg:mx-0 lg:text-left text-center"
+    >
+      <div
+        id="hero-title"
+        class="animate animate-fade-in text-4xl font-bold text-white mb-4"
+      >
+        {firstMovie.title} ({new Date(firstMovie.releaseDate).getFullYear()})
+      </div>
+      <div
+        id="hero-overview"
+        class="animate animate-fade-in leading-relaxed mb-8"
+      >
+        {firstMovie.overview}
+      </div>
+      <a
+        id="hero-play-btn"
+        class="animate animate-fade-in bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 transition-colors"
+        href={`/movies/${firstMovie.id}`}
+      >
+        See more
+      </a>
+    </div>
+  </div>
+
+  <div id="movies-trending" class="relative z-10">
+    <MoviesSection title="Trendings" movies={movies} />
+  </div>
+</section>
+
+<script src="@/assets/components/home/hero.ts"></script>
