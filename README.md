@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/descriptio.webp" height="50px"/> 
+  <img src="public/description.webp" height="50px"/> 
   <h3>Metflix, a Netflix clone</h3>
   <p>Created for didactic and educational purposes.</p>
 </div>
@@ -36,14 +36,15 @@
 </div>
 
 ## ⚒️ Stack
+
 - [**Astro**](https://astro.build/) - The web framework for content-driven websites.
 - [**Typescript**](https://www.typescriptlang.org/) - JavaScript with syntax for types.
 - [**Tailwindcss**](https://tailwindcss.com/) - A utility-first CSS framework for rapidly building custom designs.
 - [**@midudev/tailwind-animations**](https://github.com/midudev/tailwind-animations) - Extended animation utilities for Tailwind CSS.
 - [**@justinribeiro/lite-youtube**](https://github.com/justinribeiro/lite-youtube) - The fastest little YouTube web component on this side of the internet.
 
-
 ## 💡 Key Features
+
 - Infinite scroll with `IntersectionObserver`.
 - Lazy loading of images in the hero to avoid new downloads in http requests.
 - Custom reactive signals with subscribers for rendering.
@@ -73,7 +74,6 @@ Invoke-WebRequest https://get.pnpm.io/install.ps1 -UseBasicParsing | Invoke-Expr
 pnpm install
 ```
 
-
 3. Run the development server:
 
 ```bash
@@ -82,7 +82,6 @@ pnpm dev
 ```
 
 4. Open [**http://localhost:4321**](http://localhost:4321/) with your browser to see the result 🚀
-
 
 ### 🤝 Contributing
 
@@ -101,4 +100,3 @@ pnpm dev
 ## 🔑 License
 
 [MIT](#) - Created by [**jhonromero26.vercel.app**](https://jhonromero26.vercel.app).
-
