@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/description.webp" height="50px"/> 
+  <img height="300px" src="public/description.webp" /> 
   <h3>Metflix, a Netflix clone</h3>
   <p>Created for didactic and educational purposes.</p>
 </div>
