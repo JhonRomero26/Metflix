@@ -64,6 +64,7 @@ const handleCardClick = (e: Event) => {
 
   if (!card) return;
 
+  console.log(card.getAttribute("year"));
   const id = card.getAttribute("id")!;
   if (id === movie.value.id) return;
   movie.value = {
@@ -72,7 +73,7 @@ const handleCardClick = (e: Event) => {
     overview: card.getAttribute("overview")!,
     poster: card.getAttribute("poster")!,
     backdrop: card.getAttribute("backdrop") || "",
-    year: new Date(card.getAttribute("releaseDate")!).getFullYear().toString(),
+    year: card.getAttribute("year")!,
   };
 };
 

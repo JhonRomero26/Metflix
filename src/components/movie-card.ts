@@ -73,13 +73,13 @@ export function createMovieCard({
 }: MovieCardProps): HTMLElement {
   const movieCard = document.createElement("movie-card");
 
-  movieCard.setAttribute("data-id", id);
-  movieCard.setAttribute("data-title", title);
-  movieCard.setAttribute("data-poster", poster);
-  movieCard.setAttribute("data-year", year);
-  movieCard.setAttribute("data-overview", overview);
+  movieCard.setAttribute("id", id);
+  movieCard.setAttribute("title", title);
+  movieCard.setAttribute("poster", poster);
+  movieCard.setAttribute("year", year);
+  movieCard.setAttribute("overview", overview);
 
-  backdrop && movieCard.setAttribute("data-backdrop", backdrop);
+  backdrop && movieCard.setAttribute("backdrop", backdrop);
 
   return movieCard;
 }
