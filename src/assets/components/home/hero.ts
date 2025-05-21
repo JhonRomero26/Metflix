@@ -38,13 +38,13 @@ const getCachedImage = ({
     const img = new Image();
 
     const onLoad = () => {
-      resolve(img);
       img.removeEventListener("load", onLoad);
+      resolve(img);
     };
 
     const onError = (e: Event) => {
-      reject(e);
       img.removeEventListener("error", onError);
+      reject(e);
     };
 
     img.addEventListener("load", onLoad);
