@@ -1,25 +1,30 @@
 ---
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
+import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 
 interface Props {
   title: string;
   description: string;
+  canonical?: string;
+  image?: string;
 }
 
-const { title, description } = Astro.props;
+const lang = Astro.currentLocale || "en";
+const { title, description, canonical, image } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link href="/assets/img/favicon.png" type="image/x-icon" />
-    <title>{title}</title>
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
+    <SEO
+      title={title}
+      description={description}
+      canonical={canonical}
+      image={image}
+      lang={lang}
+    />
     <slot name="head" />
   </head>
   <body>

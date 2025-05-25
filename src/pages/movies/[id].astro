@@ -27,7 +27,11 @@ if (movie.videos && movie.videos.length > 0) {
 }
 ---
 
-<Layout title={`${movie.title} | Metflix`} description={movie.overview}>
+<Layout
+  title={`${movie.title} | Metflix`}
+  image={`${THE_MOVIE_DB_MEDIA_URL.W1066}/${movie.backdropImage}`}
+  description={movie.overview}
+>
   <div class="relative min-h-dvh flex items-center justify-center py-16 px-8">
     <img
       class="absolute inset-0 w-full h-full object-cover object-center z-10"
