@@ -8,16 +8,23 @@ import { THE_MOVIE_DB_MEDIA_URL } from "@/utils/consts";
 
 const { id } = Astro.params;
 
+if (!id) return Astro.redirect("/");
+
 const movie = await getMovie({
   id,
   queries: {
     append_to_response: "videos",
   },
 });
+
 const categories = movie.genres.map((genre) => genre.name);
-const trailer =
-  movie.videos.find((video) => video.type.toLowerCase() === "trailer") ||
-  movie.videos[0];
+
+let trailerMovieKey: string | undefined = undefined;
+if (movie.videos && movie.videos.length > 0) {
+  trailerMovieKey =
+    movie.videos?.find((video) => video.type.toLowerCase() === "trailer")
+      ?.key || movie.videos[0].key;
+}
 ---
 
 <Layout title={`${movie.title} | Metflix`} description={movie.overview}>
@@ -61,7 +68,7 @@ const trailer =
           </div>
         </div>
         {
-          trailer && (
+          trailerMovieKey && (
             <Modal id="trailer-modal">
               <button
                 id="play-trailer"
@@ -74,7 +81,10 @@ const trailer =
               <div class="p-4 md:p-8 lg:p-12">
                 <h2 class="text-2xl font-bold mb-4">{movie.title}</h2>
                 <div class="mb-4">{movie.overview}</div>
-                <lite-youtube params="enablejsapi=1" videoid={trailer.key} />
+                <lite-youtube
+                  params="enablejsapi=1"
+                  videoid={trailerMovieKey}
+                />
               </div>
             </Modal>
           )
