@@ -1,8 +1,10 @@
-body {
-  @apply bg-black text-neutral-300;
-  scrollbar-width: thin;
-}
+@layer base {
+  body {
+    @apply bg-black text-neutral-300;
+    scrollbar-width: thin;
+  }
 
-button {
-  @apply cursor-pointer transition-colors;
+  button {
+    @apply cursor-pointer transition-colors;
+  }
 }

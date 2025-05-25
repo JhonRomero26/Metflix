@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@astrojs/vercel": "^8.1.4",
+    "@fontsource-variable/onest": "^5.2.8",
     "@justinribeiro/lite-youtube": "^1.8.1",
     "astro": "5.7.13"
   },

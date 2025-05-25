@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./theme.css";
 @import "./elements.css";
 @import "./carousel.css";
 @plugin "@midudev/tailwind-animations";
