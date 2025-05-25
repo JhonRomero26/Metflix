@@ -2,7 +2,6 @@ import { THE_MOVIE_DB_MEDIA_URL } from "@/utils/consts";
 import { debounce } from "@/utils/debounce";
 import { signal } from "@/utils/signal";
 
-// Estado reactivo
 const movie = signal<{
   id: string;
   title: string;
@@ -65,17 +64,24 @@ const toggleHeroAnimation = (fadeIn: boolean) => {
   });
 };
 
-const changeImage = debounce(async () => {
-  const { backdrop } = movie.value;
+const handleImageChange = debounce(async () => {
+  const { backdrop, poster } = movie.value;
   const src = `${THE_MOVIE_DB_MEDIA_URL.W600}/${backdrop}`;
   const srcset = `${THE_MOVIE_DB_MEDIA_URL.W600}/${backdrop} 560w, ${THE_MOVIE_DB_MEDIA_URL.W1066}/${backdrop} 1024w, ${THE_MOVIE_DB_MEDIA_URL.ORIGINAL}/${backdrop} 1280w`;
 
   const onLoad = () => {
+    updateHeroText();
+    isLoading.value = false;
     $heroPoster.removeEventListener("load", onLoad);
+    $heroPoster.removeEventListener("error", onError);
   };
 
   const onError = () => {
+    updateHeroText();
+    isLoading.value = false;
+    $heroPoster.setAttribute("src", poster);
     $heroPoster.removeEventListener("error", onError);
+    $heroPoster.removeEventListener("load", onLoad);
   };
 
   $heroPoster.addEventListener("load", onLoad);
@@ -84,17 +90,6 @@ const changeImage = debounce(async () => {
   $heroPoster.setAttribute("src", src);
   $heroPoster.setAttribute("srcset", srcset);
 }, 150);
-
-const loadImageWithFallback = () => {
-  const handleLoadImage = () => {
-    updateHeroText();
-    isLoading.value = false;
-    $heroPoster!.removeEventListener("load", handleLoadImage);
-  };
-
-  $heroPoster!.addEventListener("load", handleLoadImage);
-  changeImage();
-};
 
 const updateHeroText = () => {
   const { id, overview, title, year } = movie.value;
@@ -115,7 +110,7 @@ const renderHero = () => {
     return;
   }
 
-  loadImageWithFallback();
+  handleImageChange();
 };
 
 const initPage = () => {
