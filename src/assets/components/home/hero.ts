@@ -22,42 +22,6 @@ const $heroPlayBtn = document.querySelector(
   "#hero-play-btn"
 ) as HTMLAnchorElement;
 
-// Caché de imágenes cargadas
-const imageCache = new Map<string, Promise<HTMLImageElement>>();
-
-const getCachedImage = ({
-  src,
-  srcset,
-}: {
-  src: string;
-  srcset?: string;
-}): Promise<HTMLImageElement> => {
-  if (imageCache.has(src)) return imageCache.get(src)!;
-
-  const promise = new Promise<HTMLImageElement>((resolve, reject) => {
-    const img = new Image();
-
-    const onLoad = () => {
-      resolve(img);
-      img.removeEventListener("load", onLoad);
-    };
-
-    const onError = (e: Event) => {
-      reject(e);
-      img.removeEventListener("error", onError);
-    };
-
-    img.addEventListener("load", onLoad);
-    img.addEventListener("error", onError);
-
-    img.setAttribute("src", src);
-    srcset && img.setAttribute("srcset", srcset);
-  });
-
-  imageCache.set(src, promise);
-  return promise;
-};
-
 const handleCardClick = (e: Event) => {
   const target = e.target as HTMLElement;
   const card = target.closest("movie-card");
@@ -75,6 +39,11 @@ const handleCardClick = (e: Event) => {
     backdrop: card.getAttribute("backdrop") || "",
     year: card.getAttribute("year")!,
   };
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 };
 
 const addCardListeners = (cards: NodeListOf<Element>) => {
@@ -101,10 +70,19 @@ const changeImage = debounce(async () => {
   const src = `${THE_MOVIE_DB_MEDIA_URL.W600}/${backdrop}`;
   const srcset = `${THE_MOVIE_DB_MEDIA_URL.W600}/${backdrop} 560w, ${THE_MOVIE_DB_MEDIA_URL.W1066}/${backdrop} 1024w, ${THE_MOVIE_DB_MEDIA_URL.ORIGINAL}/${backdrop} 1280w`;
 
-  getCachedImage({ src, srcset }).then((img) => {
-    $heroPoster.setAttribute("src", img.src);
-    $heroPoster.setAttribute("srcset", img.srcset);
-  });
+  const onLoad = () => {
+    $heroPoster.removeEventListener("load", onLoad);
+  };
+
+  const onError = () => {
+    $heroPoster.removeEventListener("error", onError);
+  };
+
+  $heroPoster.addEventListener("load", onLoad);
+  $heroPoster.addEventListener("error", onError);
+
+  $heroPoster.setAttribute("src", src);
+  $heroPoster.setAttribute("srcset", srcset);
 }, 150);
 
 const loadImageWithFallback = () => {
