@@ -94,6 +94,7 @@ const trailer =
   playTrailer?.addEventListener("click", () => {
     const modal = document.getElementById("trailer-modal");
     modal?.classList.remove("hidden");
+    modal?.classList.add("flex");
 
     if (!$ytplayer?.classList.contains("lyt-activated")) {
       $ytplayer?.click();

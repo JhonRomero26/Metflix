@@ -13,7 +13,7 @@ const { id, class: className } = Astro.props;
   id={id}
   role="dialog"
   data-component="modal"
-  class="hidden fixed inset-0 w-full bg-black/80 backdrop-blur-sm shadow-lg z-50 py-32 px-4"
+  class="hidden fixed inset-0 w-full bg-black/80 backdrop-blur-sm shadow-lg z-50 lg:py-32 p-4 justify-center items-center"
 >
   <div
     class={`max-w-3xl w-full mx-auto bg-neutral-900 rounded overflow-hidden ${className}`}
@@ -29,6 +29,7 @@ const { id, class: className } = Astro.props;
     modal.addEventListener("click", (event) => {
       if (event.target === modal) {
         modal.classList.add("hidden");
+        modal.classList.remove("flex");
       }
     });
   });
